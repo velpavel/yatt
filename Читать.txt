@@ -1,0 +1,10 @@
+Перед запуском вначе в интерфейсе БД выполнить
+CREATE DATABASE yattsitedb;
+CREATE USER yattAdmin IDENTIFIED BY "secret";
+GRANT ALL ON yattsitedb.* TO yattAdmin;
+
+Затем в консоле перейти в ../Yatt_site/yatt
+И выполнить 
+python manage.py syncdb
+
+СуперЮзер YaAdmin | qwerty

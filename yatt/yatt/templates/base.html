@@ -1,0 +1,15 @@
+﻿<html>
+<head>
+     <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <h1>Yatt site.</h1>
+    <br>
+    <p>#Будут и менюшки и остальное. Наверное в инклудах. Где-то на этой странице</p>
+    {% block content %}{% endblock %}
+    {% block footer %}
+    <hr>
+    <p>Thanks for visiting our site.</p>
+    {% endblock %}
+</body>
+</html>

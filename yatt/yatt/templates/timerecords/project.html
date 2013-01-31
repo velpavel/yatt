@@ -1,0 +1,25 @@
+﻿{% extends "base.html" %}
+
+{% block title %}О проекте "{{ project.name }}"{% endblock %}
+
+{% block content %}
+    Вы в смотрите инфу о проекте "{{project.name}}"<br>
+    Его родитель:
+    {% if project.parent %}
+        <p> <a href='/tracking/{{project.parent.id}}'>{{project.parent}}</a></p>
+    {% else%}
+        <p>Сирота...</p>
+    {% endif %}
+    Его дети:
+    {% for child in project.project_set.all %}
+        <p> <a href='/tracking/{{child.id}}'>{{child}}</a></p>
+    {% empty%}
+        <p>Нет деток...</p>
+    {% endfor %}
+    Его записи:
+    {% for record in project.record_set.all %}
+        <p>{{record.project}} | {{record.start_time}} | {{record.end_time|date:"H i"}}</p>
+    {% empty%}
+        <p>Нет записей...</p>
+    {% endfor %}
+{% endblock %}

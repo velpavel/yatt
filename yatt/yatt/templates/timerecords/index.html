@@ -1,0 +1,15 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Список проектов{% endblock %}
+
+{% block content %}
+    {% if projects_list %}
+        <ul>
+        {% for project in projects_list %}
+            <li><a href="/tracking/{{ project.id }}/">{{ project.name }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>У вас ещё нет проектов.</p>
+    {% endif %}
+{% endblock %}
