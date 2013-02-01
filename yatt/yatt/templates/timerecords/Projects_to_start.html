@@ -1,12 +1,21 @@
-﻿{% for project in list %}
-    <p>{{project.name}}</p>
-{%endfor%}
+﻿{% extends "base.html" %}
+{% block title %}Начнём запись{% endblock %}
+{% block content %}
+    {% if now_going %}
+        <p>Сейчас запущены:</p>
+        <ul>
+        {% for record in now_going %}
+        <li>{{record}}</li>
+        {%endfor%}
+        </ul>
+    {% endif %}
 
-<form action="/tracking/start/" method="post">
-{% csrf_token %}
-{% for project in list %}
-    <input type="radio" name="prjct" id="prjct{{ forloop.counter }}" value="{{ project.id }}" />
-    <label for="prjct{{ forloop.counter }}">{{ project.name }}</label><br />
-{% endfor %}
-<input type="submit" value="Start" />
-</form>
+    <form action="/tracking/start/" method="post">
+    {% csrf_token %}
+    {% for project in list %}
+        <input type="radio" name="prjct" id="prjct{{ forloop.counter }}" value="{{ project.project.id }}" />
+        <label for="prjct{{ forloop.counter }}">{{ project.project.name }}  ({{project.duration}} секунд)</label><br>
+    {% endfor %}
+    <input type="submit" value="Start" />
+    </form>
+{% endblock %}

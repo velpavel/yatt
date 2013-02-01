@@ -1,7 +1,11 @@
-﻿Создана запись
-{{ rec }}
-
-Завершены записи:
-{% for record in rec_list %}
-    <p>{{record}} длительность {{record.duration}} seconds</p>
-{%endfor%}
+﻿{% extends "base.html" %}
+{% block title %}Что призошло{% endblock %}
+{% block content %}
+    Создана запись
+    {{ rec }}
+    <br>
+    Завершены записи:
+    {% for record in rec_list %}
+        <p>{{record}} длительность {{record.duration}} seconds</p>
+    {%endfor%}
+{% endblock %}

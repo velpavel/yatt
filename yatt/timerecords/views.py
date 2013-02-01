@@ -7,12 +7,20 @@ from django.utils import timezone
 import datetime
 
 def project_list(request):
-    #Добыча списка проеrтов.
-    projects_list=Project.objects.filter(user=request.user)
+    #Добыча списка корневых проектов.
+    projects=Project.objects.filter(user=request.user)
     #Добыча записей с нулл длительностью. и передача в форму.    
-    
-    #На форме остановить для запущенного и продолжить для списка.
-    return render_to_response('timerecords/Projects_to_start.html', {'list': projects_list}, 
+    null_rec_list=Record.objects.filter(user=request.user, duration=None)
+   #Вычислим длительность для каждого проекта
+    projects_list=[]
+    for project in projects:
+        duration=0
+        recs_list=Record.objects.filter(project=project)
+        for rec in recs_list:
+            if rec.duration: 
+                duration=duration+rec.duration
+        projects_list.append({'project': project, 'duration':duration})
+    return render_to_response('timerecords/Projects_to_start.html', {'list': projects_list, 'now_going': null_rec_list}, 
                                 context_instance=RequestContext(request)) 
                                 
 
