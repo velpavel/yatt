@@ -1,5 +1,7 @@
-﻿{{ rec }}
+﻿Создана запись
+{{ rec }}
 
+Завершены записи:
 {% for record in rec_list %}
-    <p>{{record}}</p>
+    <p>{{record}} длительность {{record.duration}} seconds</p>
 {%endfor%}

@@ -13,8 +13,13 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+    
+    #Главная - список ссылок Это временная мера
+    url(r'^$', 'yatt.views.home'),
     url(r'^accounts/login/$',login),
     url(r'^accounts/logout/$',logout),
+    #когда-нибудь тут будет другая ссыль
+    url(r'^accounts/profile/$', 'yatt.views.home'),
     # Список проектов с возможностью посмотреть вложенные.
     # !Думаю надо переработать.
     # !Например оставить только верхушку иерархии с возможностью развернуть
