@@ -12,9 +12,13 @@ def project_list(request):
     #Добыча записей с нулл длительностью. и передача в форму.    
     
     #На форме остановить для запущенного и продолжить для списка.
-    return render_to_response('timerecords/test.html', {'list': projects_list}, 
+    return render_to_response('timerecords/Projects_to_start.html', {'list': projects_list}, 
                                 context_instance=RequestContext(request)) 
                                 
+
+# Процедура старта записи.
+# Вызывается только передачей данных из формы. !добавить обработку ошибок. если не из формы. И вкулючить в проджект лист
+# Сейчас нужна для вывода отладочной инфы
 def start(request):
     pr=Project.objects.get(pk=request.POST['prjct'])
     null_rec_list=Record.objects.filter(user=request.user, duration=None)

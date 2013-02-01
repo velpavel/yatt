@@ -1,4 +1,4 @@
-import os.path
+﻿import os.path
 # Django settings for yatt project.
 
 DEBUG = True
