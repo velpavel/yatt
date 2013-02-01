@@ -13,13 +13,13 @@ class Project(models.Model):
     description = models.TextField(blank=True) 
     #Ok. This is hierarchi structure now.
     parent = models.ForeignKey('self', blank=True, null=True)
-    #I want to have tags =)
+    #But I want to have tags =)
     tags=models.ManyToManyField(Tag, blank=True);
     # If user use quick method he create project only wih name.
     # It is not good for next sistimatisation and analis.
     # So we can remaind him about all this projects.
     new = models.BooleanField(default=False)
-    # When user choose what he want to do there are may be many projects
+    #There are may be many projects
     #Some of them only for hierarh srtucture
     #Let's filter them!
     can_has_records = models.BooleanField(default=True)
@@ -36,8 +36,7 @@ class Record(models.Model):
     user = models.ForeignKey(User)
     project = models.ForeignKey(Project)
     start_time = models.DateTimeField('start Time')
- #   duration = models.DateTimeField('duration', blank=True, null=True) it's old
-    #Now we save seconds
+    #Now we save seconds it this field
     duration = models.IntegerField()
     note = models.TextField(blank=True)
     
