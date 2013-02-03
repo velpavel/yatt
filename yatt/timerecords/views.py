@@ -35,23 +35,27 @@ def project_list(request):
     #!Нет защиты от зацикленных проектов 1-2-3-1
     projects=Project.objects.filter(user=request.user, parent=None)
     hier_projects_list=[]
-    if projects:
-        #Иерархическая обработка
-        temp=[]
-        for project in projects:
-            temp.append({'project': project, 'level': 0})
-        while temp:
-            k=temp[0]
-            hier_projects_list.append(k)
-            child_list=[]
-            for child in k['project'].project_set.all().filter(user=request.user):
-                child_list.append({'project': child, 'level': k['level']+1})
-            temp[0:1]=child_list
-    else:
-        projects=Project.objects.filter(user=request.user)
-        #добавим уровень иерархии 0
-        for project in projects:
-            hier_projects_list=hier_projects_list.append({'project': project, 'level': 0})   
+    #Иерархическая обработка
+    temp=[]
+    for project in projects:
+        temp.append({'project': project, 'level': 1})
+    while temp:
+        k=temp[0]
+        hier_projects_list.append(k)
+        child_list=[]
+        for child in k['project'].project_set.all().filter(user=request.user):
+            child_list.append({'project': child, 'level': k['level']+1})
+        temp[0:1]=child_list
+    #Здесь начнём обработку проетов без корневого
+    projects=Project.objects.filter(user=request.user)
+    now_we_have_projects=[]
+    for project in hier_projects_list:
+        now_we_have_projects.append(project['project'])
+    #добавим уровень иерархии 0
+    for project in projects:
+        if project not in now_we_have_projects:
+            hier_projects_list.append({'project': project, 'level': 0})   
+   
    #Вычислим длительность для каждого проекта
     projects_list=[]
     for project in hier_projects_list:
