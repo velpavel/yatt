@@ -22,25 +22,48 @@ def format_duration(duration):
         s=s+'Минут: '+str(minutes)+'. '
         duration=duration-(minutes*60)
     seconds=duration//1
-    if seconds:
+    if seconds or not s:
         s=s+'Секунд: '+str(seconds)+'.'
     return s
 
 def project_list(request):
-    #Добыча списка корневых проектов.
-    projects=Project.objects.filter(user=request.user)
     #Добыча записей с нулл длительностью. и передача в форму.    
     null_rec_list=Record.objects.filter(user=request.user, duration=None)
+    
+    #Добыча списка корневых проектов. 
+    #Если нет чётких корневых, будем использовать просто список проектов.
+    #!Нет защиты от зацикленных проектов 1-2-3-1
+    projects=Project.objects.filter(user=request.user, parent=None)
+    hier_projects_list=[]
+    if projects:
+        #Иерархическая обработка
+        temp=[]
+        for project in projects:
+            temp.append({'project': project, 'level': 0})
+        while temp:
+            k=temp[0]
+            hier_projects_list.append(k)
+            child_list=[]
+            for child in k['project'].project_set.all().filter(user=request.user):
+                child_list.append({'project': child, 'level': k['level']+1})
+            temp[0:1]=child_list
+    else:
+        projects=Project.objects.filter(user=request.user)
+        #добавим уровень иерархии 0
+        for project in projects:
+            hier_projects_list=hier_projects_list.append({'project': project, 'level': 0})   
    #Вычислим длительность для каждого проекта
     projects_list=[]
-    for project in projects:
+    for project in hier_projects_list:
         duration=0
-        recs_list=Record.objects.filter(project=project)
+        recs_list=Record.objects.filter(project=project['project'])
         for rec in recs_list:
             if rec.duration: 
                 duration=duration+rec.duration
         duration=format_duration(duration)
-        projects_list.append({'project': project, 'duration':duration})
+        #Текущий символ обозначения иерархии
+        hier='->'
+        projects_list.append({'project': project['project'], 'level': hier*project['level'], 'duration': duration})
     return render_to_response('timerecords/Projects_to_start.html', {'list': projects_list, 'now_going': null_rec_list}, 
                                 context_instance=RequestContext(request)) 
                                 
