@@ -42,9 +42,3 @@ class Record(models.Model):
     
     def __unicode__(self):
         return '%s %s' %(self.project, self.start_time) 
-    
-    
-
-
-
-

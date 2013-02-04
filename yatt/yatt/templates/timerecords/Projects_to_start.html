@@ -12,6 +12,12 @@
 
     <form action="/tracking/start/" method="post">
     {% csrf_token %}
+    {% if now_going %}
+        <input type="radio" name="prjct" id="prjct-1" value="-1" />
+        <label for="prjct-1">! Остановить всё.</label><br>
+    {% endif %}
+    <input type="radio" name="prjct" id="prjct-2" value="-2" />
+    <label for="prjct-2">Новый проект:<input type="" name="newprjct" size=90></label><br>
     {% for project in list %}
         <input type="radio" name="prjct" id="prjct{{ forloop.counter }}" value="{{ project.project.id }}" />
         <label for="prjct{{ forloop.counter }}">{{project.level}} {{ project.project.name }}  ({{project.duration}})</label><br>

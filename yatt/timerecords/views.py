@@ -2,7 +2,6 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from timerecords.models import Project, Record
-from django.template import RequestContext
 from django.utils import timezone
 import datetime
 
@@ -27,12 +26,34 @@ def format_duration(duration):
     return s
 
 def project_list(request):
-    #Добыча записей с нулл длительностью. и передача в форму.    
+    #Добыча записей с нулл длительностью
     null_rec_list=Record.objects.filter(user=request.user, duration=None)
+    #Обработка старта/остановки треккинга
+    if 'prjct' in request.POST:
+        for rec in null_rec_list:
+            a=timezone.now()-rec.start_time
+            rec.duration=a.days*24*60*60+a.seconds
+            rec.save()
+        pr_answer=request.POST['prjct']
+        #Если заводим запись в новый проект:
+        if pr_answer==-2 and request.POST['newprjct']:
+            pr_new=Project(user=request.user, name=request.POST['newprjct'], new=True)
+            pr_new.save()
+            pr_answer=pr_new.id
+        #Если не нужно удалять:
+        if pr_answer<>-1:
+            try:
+                pr=Project.objects.get(pk=pr_answer)
+            except Exception:
+                rec_new=[]
+            else:
+                rec_new = Record(user=request.user, project=pr, start_time=timezone.now())
+                rec_new.save()
+        #Обновление списка записей с нулл длительностью.    
+        null_rec_list=Record.objects.filter(user=request.user, duration=None)
     
     #Добыча списка корневых проектов. 
     #Если нет чётких корневых, будем использовать просто список проектов.
-    #!Нет защиты от зацикленных проектов 1-2-3-1
     projects=Project.objects.filter(user=request.user, parent=None)
     hier_projects_list=[]
     #Иерархическая обработка
@@ -73,15 +94,30 @@ def project_list(request):
                                 
 
 # Процедура старта записи.
-# Вызывается только передачей данных из формы. !добавить обработку ошибок. если не из формы. И вкулючить в проджект лист
+# Вызывается только передачей данных из формы. !добавить обработку ошибок. если не из формы. И включить в проджект лист
 # Сейчас нужна для вывода отладочной инфы
 def start(request):
-    pr=Project.objects.get(pk=request.POST['prjct'])
+    #Добыча записей с нулл длительностью
     null_rec_list=Record.objects.filter(user=request.user, duration=None)
-    for rec in null_rec_list:
-        a=timezone.now()-rec.start_time
-        rec.duration=a.days*24*60*60+a.seconds
-        rec.save()
-    rec_new = Record(user=request.user, project=pr, start_time=timezone.now())
-    rec_new.save()
+    #Обработка старта/остановки треккинга
+    if 'prjct' in request.POST:
+        for rec in null_rec_list:
+            a=timezone.now()-rec.start_time
+            rec.duration=a.days*24*60*60+a.seconds
+            rec.save()
+        pr_answer=request.POST['prjct']
+        #Если заводим запись в новый проект:
+        if pr_answer=='-2' and request.POST['newprjct']:
+            pr_new=Project(user=request.user, name=request.POST['newprjct'], new=True)
+            pr_new.save()
+            pr_answer=pr_new.id
+        #Если не нужно удалять:
+        if pr_answer<>'-1':
+            try:
+                pr=Project.objects.get(pk=pr_answer)
+            except Exception:
+                rec_new=[]
+            else:
+                rec_new = Record(user=request.user, project=pr, start_time=timezone.now())
+                rec_new.save()
     return render_to_response('timerecords/start.html', {'rec': rec_new, 'rec_list':null_rec_list})
