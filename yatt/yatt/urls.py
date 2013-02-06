@@ -34,6 +34,9 @@ urlpatterns = patterns('',
         DetailView.as_view(
             model=Project,
             template_name='timerecords/project.html')),
+            
+    # редактирование записей
+    url(r'^tracking/record/(?P<rec_id>\d+)/$', 'timerecords.views.edit_record'),
     
     # Начало записи в проекте. Потом объеденить с index?
     url(r'^tracking/$', 'timerecords.views.project_list'),

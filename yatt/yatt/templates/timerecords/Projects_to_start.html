@@ -20,7 +20,7 @@
     <label for="prjct-2">Новый проект:<input type="" name="newprjct" size=90></label><br>
     {% for project in list %}
         <input type="radio" name="prjct" id="prjct{{ forloop.counter }}" value="{{ project.project.id }}" />
-        <label for="prjct{{ forloop.counter }}">{{project.level}} {{ project.project.name }}  ({{project.duration}})</label><br>
+        <label for="prjct{{ forloop.counter }}">{{project.level}} {{ project.project.name }}  ({{project.duration}})(<a href="/tracking/{{project.project.id}}/">О проекте</a>)</label><br>
     {% endfor %}
     <input type="submit" value="Start" />
     </form>

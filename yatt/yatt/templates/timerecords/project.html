@@ -18,7 +18,7 @@
     {% endfor %}
     Его записи:
     {% for record in project.record_set.all %}
-        <p>{{record.project}} | {{record.start_time}} | {{record.end_time|date:"H i"}}</p>
+        <p><a href="/tracking/record/{{record.id}}">{{record.project}} | {{record.start_time}} | {{record.duration}}</a></p>
     {% empty%}
         <p>Нет записей...</p>
     {% endfor %}

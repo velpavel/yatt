@@ -1,0 +1,15 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Редактирование сайта{% endblock %}
+
+{% block content %}
+    {% if rec %}
+        <form action="/tracking/record/{{rec.id}}" method="post">
+        {% csrf_token %}
+            {{form.as_p}}
+            <input type="submit" value="Submit" />
+        </form> 
+    {% else %}
+        <p>Нет такой записи для вас</p>
+    {% endif %}
+{% endblock %}

@@ -2,6 +2,7 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from timerecords.models import Project, Record
+from timerecords.forms import RecordForm
 from django.utils import timezone
 import datetime
 
@@ -30,25 +31,7 @@ def project_list(request):
     null_rec_list=Record.objects.filter(user=request.user, duration=None)
     #Обработка старта/остановки треккинга
     if 'prjct' in request.POST:
-        for rec in null_rec_list:
-            a=timezone.now()-rec.start_time
-            rec.duration=a.days*24*60*60+a.seconds
-            rec.save()
-        pr_answer=request.POST['prjct']
-        #Если заводим запись в новый проект:
-        if pr_answer==-2 and request.POST['newprjct']:
-            pr_new=Project(user=request.user, name=request.POST['newprjct'], new=True)
-            pr_new.save()
-            pr_answer=pr_new.id
-        #Если не нужно удалять:
-        if pr_answer<>-1:
-            try:
-                pr=Project.objects.get(pk=pr_answer)
-            except Exception:
-                rec_new=[]
-            else:
-                rec_new = Record(user=request.user, project=pr, start_time=timezone.now())
-                rec_new.save()
+        #! После тестов вставить сюда из start
         #Обновление списка записей с нулл длительностью.    
         null_rec_list=Record.objects.filter(user=request.user, duration=None)
     
@@ -111,13 +94,21 @@ def start(request):
             pr_new=Project(user=request.user, name=request.POST['newprjct'], new=True)
             pr_new.save()
             pr_answer=pr_new.id
-        #Если не нужно удалять:
-        if pr_answer<>'-1':
+        #Продолжаем какой-то проект или останавливаем всё:
+        else:
             try:
                 pr=Project.objects.get(pk=pr_answer)
             except Exception:
-                rec_new=[]
+                rec_new=None
             else:
                 rec_new = Record(user=request.user, project=pr, start_time=timezone.now())
                 rec_new.save()
     return render_to_response('timerecords/start.html', {'rec': rec_new, 'rec_list':null_rec_list})
+    
+def edit_record(request, rec_id=None):
+    try:
+        rec=Record.objects.filter(user=request.user).get(pk=rec_id)
+    except Exception:
+        rec=None
+    form=RecordForm(instance=rec)
+    return render_to_response('timerecords/edit_rec.html', {'rec': rec, 'form': form,})
