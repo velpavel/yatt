@@ -33,7 +33,7 @@ class Record(models.Model):
     #Because project has user and we can't create record without user.
     #Then fix view index of obojects.
     #but if it we want an instrujent of team work this field is must have
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, blank=False)
     project = models.ForeignKey(Project)
     start_time = models.DateTimeField('start Time')
     #Now we save seconds it this field

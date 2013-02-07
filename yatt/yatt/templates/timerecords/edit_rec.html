@@ -3,8 +3,15 @@
 {% block title %}Редактирование сайта{% endblock %}
 
 {% block content %}
+    {% if form.subject.errors %}
+        <ol>
+        {% for error in form.subject.errors %}
+            <li><strong>{{ error}}</strong></li>
+        {% endfor %}
+    </ol>
+    {% endif %}
     {% if rec %}
-        <form action="/tracking/record/{{rec.id}}" method="post">
+        <form action="/tracking/record/{{rec.id}}/" method="post">
         {% csrf_token %}
             {{form.as_p}}
             <input type="submit" value="Submit" />

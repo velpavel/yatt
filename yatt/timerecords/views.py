@@ -1,6 +1,7 @@
 ﻿# Create your views here.
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.http import HttpResponseRedirect
 from timerecords.models import Project, Record
 from timerecords.forms import RecordForm
 from django.utils import timezone
@@ -110,5 +111,11 @@ def edit_record(request, rec_id=None):
         rec=Record.objects.filter(user=request.user).get(pk=rec_id)
     except Exception:
         rec=None
-    form=RecordForm(instance=rec)
-    return render_to_response('timerecords/edit_rec.html', {'rec': rec, 'form': form,})
+    if request.method == 'POST':
+        form=RecordForm(request.POST, instance=rec)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/tracking/%s/' %rec.project.id)
+    else:
+        form=RecordForm(instance=rec)
+    return render_to_response('timerecords/edit_rec.html', {'rec': rec, 'form': form,}, context_instance=RequestContext(request))
