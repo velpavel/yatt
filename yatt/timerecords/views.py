@@ -66,14 +66,13 @@ def start(request):
             pr_new.save()
             pr_answer=pr_new.id
         #Продолжаем какой-то проект или останавливаем всё:
+        try:
+            pr=Project.objects.get(pk=pr_answer)
+        except Exception:
+            rec_new=None
         else:
-            try:
-                pr=Project.objects.get(pk=pr_answer)
-            except Exception:
-                rec_new=None
-            else:
-                rec_new = Record(user=request.user, project=pr, start_time=timezone.now())
-                rec_new.save()
+            rec_new = Record(user=request.user, project=pr, start_time=timezone.now())
+            rec_new.save()
     return render_to_response('timerecords/start.html', {'rec': rec_new, 'rec_list':null_rec_list})
     
 def edit_record(request, rec_id=None):
