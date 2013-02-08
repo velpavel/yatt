@@ -1,6 +1,6 @@
 ﻿{% extends "base.html" %}
 
-{% block title %}Редактирование сайта{% endblock %}
+{% block title %}Редактирование{% endblock %}
 
 {% block content %}
     {% if form.subject.errors %}
@@ -11,7 +11,7 @@
     </ol>
     {% endif %}
     {% if rec %}
-        <form action="/tracking/record/{{rec.id}}/" method="post">
+        <form action="" method="post">
         {% csrf_token %}
             {{form.as_p}}
             <input type="submit" value="Submit" />

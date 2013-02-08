@@ -4,6 +4,7 @@
 
 {% block content %}
     Вы в смотрите инфу о проекте "{{project.name}}"<br>
+    <a href="/tracking/project/{{project.id}}">Отредактировать проект</a> <br>
     Его родитель:
     {% if project.parent %}
         <p> <a href='/tracking/{{project.parent.id}}'>{{project.parent}}</a></p>

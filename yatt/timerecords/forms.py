@@ -15,3 +15,13 @@ class RecordForm(forms.ModelForm):
             self.fields['project'].queryset = Project.objects.filter(user = self.instance.user)
         except:
             pass
+            
+#Клас для редактирования проекта
+class ProjectForm(forms.ModelForm):
+    def __init__(self, aviable_parents=[], *args, **kwargs):
+        super(ProjectForm, self).__init__(*args, **kwargs)
+        self.fields['parent'].queryset = Project.objects.filter(id__in = aviable_parents)
+        
+    class Meta:
+        model = Project
+        exclude={'user'}

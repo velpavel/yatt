@@ -3,29 +3,10 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from timerecords.models import Project, Record
-from timerecords.forms import RecordForm
+from timerecords.forms import RecordForm, ProjectForm
+from timerecords.def_modules import format_duration, hier_childs
 from django.utils import timezone
 import datetime
-
-#Процедура для преобразования длительности в секундах в строку
-def format_duration(duration):
-    s=''
-    days=duration//(24*60*60)
-    if days:
-        s=s+'Дней: '+str(days)+'. '
-        duration=duration-(days*24*60*60)
-    hours=duration//(60*60)
-    if hours:
-        s=s+'Часов: '+str(hours)+'. '
-        duration=duration-(hours*60*60)
-    minutes=duration//60
-    if minutes:
-        s=s+'Минут: '+str(minutes)+'. '
-        duration=duration-(minutes*60)
-    seconds=duration//1
-    if seconds or not s:
-        s=s+'Секунд: '+str(seconds)+'.'
-    return s
 
 def project_list(request):
     #Добыча записей с нулл длительностью
@@ -39,18 +20,7 @@ def project_list(request):
     #Добыча списка корневых проектов. 
     #Если нет чётких корневых, будем использовать просто список проектов.
     projects=Project.objects.filter(user=request.user, parent=None)
-    hier_projects_list=[]
-    #Иерархическая обработка
-    temp=[]
-    for project in projects:
-        temp.append({'project': project, 'level': 1})
-    while temp:
-        k=temp[0]
-        hier_projects_list.append(k)
-        child_list=[]
-        for child in k['project'].project_set.all().filter(user=request.user):
-            child_list.append({'project': child, 'level': k['level']+1})
-        temp[0:1]=child_list
+    hier_projects_list=hier_childs(head_projects=projects, user=request.user)
     #Здесь начнём обработку проетов без корневого
     projects=Project.objects.filter(user=request.user)
     now_we_have_projects=[]
@@ -119,3 +89,33 @@ def edit_record(request, rec_id=None):
     else:
         form=RecordForm(instance=rec)
     return render_to_response('timerecords/edit_rec.html', {'rec': rec, 'form': form,}, context_instance=RequestContext(request))
+    
+# Редактирование проекта. Возникает ошибка, если редкатрировать проект, которые замкнут в иерархическю петлю
+def edit_project(request, prj_id=None):
+    try:
+        project=Project.objects.filter(user=request.user).get(pk=prj_id)
+    except Exception:
+        project=None
+#Получаем список проектов. которые не могут быть родителями
+    child_list=hier_childs(head_projects=[project,], user=request.user)
+    if not child_list:
+        #Тут надо совсем опечалиться и что-то нибудь умное сделать. Например:
+        project.parent=None
+        project.save()
+        child_list=hier_childs(head_projects=[project,], user=request.user)
+    can_not_be_parrent = []
+    for pr in child_list:
+        can_not_be_parrent.append(pr['project'].id)
+    can_be_parent=Project.objects.filter(user=request.user).exclude(pk__in=can_not_be_parrent)
+    id_can_be_parent=[]
+    for pr in can_be_parent:
+        id_can_be_parent.append(pr.id)
+#Приступаем к дальнейшей обработке
+    if request.method == 'POST':
+        form=ProjectForm(id_can_be_parent, request.POST, instance=project)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/tracking/%s/' %project.id)
+    else:
+        form=ProjectForm(id_can_be_parent, instance=project)
+    return render_to_response('timerecords/edit_rec.html', {'rec': project, 'form': form,}, context_instance=RequestContext(request))

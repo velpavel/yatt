@@ -14,7 +14,7 @@
     {% csrf_token %}
     {% if now_going %}
         <input type="radio" name="prjct" id="prjct-1" value="-1" />
-        <label for="prjct-1">! Остановить всё.</label><br>
+        <label for="prjct-1">! Остановить текущий.</label><br>
     {% endif %}
     <input type="radio" name="prjct" id="prjct-2" value="-2" />
     <label for="prjct-2">Новый проект:<input type="" name="newprjct" size=90></label><br>
