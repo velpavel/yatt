@@ -1,4 +1,4 @@
-﻿from timerecords.models import Project
+﻿from timerecords.models import Project, Record
 
 
 #Процедура для преобразования длительности в секундах в строку
@@ -22,7 +22,7 @@ def format_duration(duration):
     return s
 
     #Возвращает множество словарей типа [{'project': project, 'level': уровень иерархии},]
-def hier_childs(head_projects, user):
+def hier_childs(head_projects, user=None):
     hier_projects_list=[]
     #Иерархическая обработка
     temp=[]
@@ -32,10 +32,24 @@ def hier_childs(head_projects, user):
         k=temp[0]
         hier_projects_list.append(k)
         child_list=[]
-        for child in k['project'].project_set.all().filter(user=user):
+        if user:
+            all_child=k['project'].project_set.all().filter(user=user)
+        else:
+            all_child=k['project'].project_set.all()
+        for child in all_child:
             child_list.append({'project': child, 'level': k['level']+1})
             # проверка на зацикленность
             if child in head_projects:
                 return []
         temp[0:1]=child_list
     return hier_projects_list
+    
+ # Расчёт длительности с учётом всех детей.
+def total_duration(project):
+    t_dur=0
+    for rec in Record.objects.filter(project=project):
+        if rec.duration: 
+            t_dur=t_dur+rec.duration
+    for child in project.project_set.all():
+        t_dur+=total_duration(child)
+    return t_dur

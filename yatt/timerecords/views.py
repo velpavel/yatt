@@ -4,18 +4,42 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from timerecords.models import Project, Record
 from timerecords.forms import RecordForm, ProjectForm
-from timerecords.def_modules import format_duration, hier_childs
+from timerecords.def_modules import format_duration, hier_childs, total_duration
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 import datetime
 
+@login_required
 def project_list(request):
     #Добыча записей с нулл длительностью
     null_rec_list=Record.objects.filter(user=request.user, duration=None)
     #Обработка старта/остановки треккинга
     if 'prjct' in request.POST:
         #! После тестов вставить сюда из start
-        #Обновление списка записей с нулл длительностью.    
         null_rec_list=Record.objects.filter(user=request.user, duration=None)
+        #Обработка старта/остановки треккинга
+        if 'prjct' in request.POST:
+            #Останавливаем текущие
+            for rec in null_rec_list:
+                a=timezone.now()-rec.start_time
+                rec.duration=a.days*24*60*60+a.seconds
+                rec.save()
+            pr_answer=request.POST['prjct']
+            #Если заводим запись в новый проект:
+            if pr_answer=='-2' and request.POST['newprjct']:
+                pr_new=Project(user=request.user, name=request.POST['newprjct'], new=True)
+                pr_new.save()
+                pr_answer=pr_new.id
+            #Продолжаем какой-то проект:
+            try:
+                pr=Project.objects.get(pk=pr_answer)
+            except Exception:
+                rec_new=None
+            else:
+                rec_new = Record(user=request.user, project=pr, start_time=timezone.now())
+                rec_new.save()
+            #Обновление списка записей с нулл длительностью.    
+            null_rec_list=Record.objects.filter(user=request.user, duration=None)
     
     #Добыча списка корневых проектов. 
     #Если нет чётких корневых, будем использовать просто список проектов.
@@ -42,39 +66,11 @@ def project_list(request):
         duration=format_duration(duration)
         #Текущий символ обозначения иерархии
         hier='->'
-        projects_list.append({'project': project['project'], 'level': hier*project['level'], 'duration': duration})
+        projects_list.append({'project': project['project'], 'level': hier*project['level'], 'duration': duration, 'total_duration': format_duration(total_duration(project['project']))})
     return render_to_response('timerecords/Projects_to_start.html', {'list': projects_list, 'now_going': null_rec_list}, 
                                 context_instance=RequestContext(request)) 
-                                
-
-# Процедура старта записи.
-# Вызывается только передачей данных из формы. !добавить обработку ошибок. если не из формы. И включить в проджект лист
-# Сейчас нужна для вывода отладочной инфы
-def start(request):
-    #Добыча записей с нулл длительностью
-    null_rec_list=Record.objects.filter(user=request.user, duration=None)
-    #Обработка старта/остановки треккинга
-    if 'prjct' in request.POST:
-        for rec in null_rec_list:
-            a=timezone.now()-rec.start_time
-            rec.duration=a.days*24*60*60+a.seconds
-            rec.save()
-        pr_answer=request.POST['prjct']
-        #Если заводим запись в новый проект:
-        if pr_answer=='-2' and request.POST['newprjct']:
-            pr_new=Project(user=request.user, name=request.POST['newprjct'], new=True)
-            pr_new.save()
-            pr_answer=pr_new.id
-        #Продолжаем какой-то проект или останавливаем всё:
-        try:
-            pr=Project.objects.get(pk=pr_answer)
-        except Exception:
-            rec_new=None
-        else:
-            rec_new = Record(user=request.user, project=pr, start_time=timezone.now())
-            rec_new.save()
-    return render_to_response('timerecords/start.html', {'rec': rec_new, 'rec_list':null_rec_list})
     
+@login_required
 def edit_record(request, rec_id=None):
     try:
         rec=Record.objects.filter(user=request.user).get(pk=rec_id)
@@ -89,7 +85,8 @@ def edit_record(request, rec_id=None):
         form=RecordForm(instance=rec)
     return render_to_response('timerecords/edit_rec.html', {'rec': rec, 'form': form,}, context_instance=RequestContext(request))
     
-# Редактирование проекта. Возникает ошибка, если редкатрировать проект, которые замкнут в иерархическю петлю
+# Редактирование проекта.
+@login_required
 def edit_project(request, prj_id=None):
     try:
         project=Project.objects.filter(user=request.user).get(pk=prj_id)
@@ -118,3 +115,14 @@ def edit_project(request, prj_id=None):
     else:
         form=ProjectForm(id_can_be_parent, instance=project)
     return render_to_response('timerecords/edit_rec.html', {'rec': project, 'form': form,}, context_instance=RequestContext(request))
+    
+# просмотр проекта.
+@login_required
+def show_project(request, prj_id=None):
+    try:
+        project=Project.objects.filter(user=request.user).get(pk=prj_id)
+    except Exception:
+        project=None
+    #сюда можно запихать проверку на нужного юзера для детей и родителей
+    
+    return render_to_response('timerecords/show_project.html', {'rec': project, 'form': form,}, context_instance=RequestContext(request))

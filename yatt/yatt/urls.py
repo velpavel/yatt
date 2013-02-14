@@ -21,8 +21,7 @@ urlpatterns = patterns('',
     #когда-нибудь тут будет другая ссыль
     url(r'^accounts/profile/$', 'yatt.views.home'),
     # Список проектов с возможностью посмотреть вложенные.
-    # !Думаю надо переработать.
-    # !Например оставить только верхушку иерархии с возможностью развернуть
+    # Теперь это отдадочный список для просмотра проектов всех пользователей.
     url(r'^tracking/index/$', 
         ListView.as_view(
             queryset=Project.objects.order_by('name'),
@@ -35,6 +34,7 @@ urlpatterns = patterns('',
             model=Project,
             template_name='timerecords/project.html')),
             
+    url(r'^tracking/(?P<prj_id>\d+)/new/$', 'timerecords.views.show_project'),
     # редактирование записей
     url(r'^tracking/record/(?P<rec_id>\d+)/$', 'timerecords.views.edit_record'),
     # редактирование проектов
@@ -42,8 +42,5 @@ urlpatterns = patterns('',
     
     # Начало записи в проекте. Потом объеденить с index?
     url(r'^tracking/$', 'timerecords.views.project_list'),
-    
-    # ссылка для старта записи. И вывод отладочной инфы. Потом встроить во что-нибудь.
-    url(r'^tracking/start/$', 'timerecords.views.start'),
     
 )
