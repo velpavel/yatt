@@ -49,7 +49,7 @@ def total_duration(project):
     t_dur=0
     for rec in Record.objects.filter(project=project):
         if rec.duration: 
-            t_dur=t_dur+rec.duration
+            t_dur+=rec.duration
     for child in project.project_set.all():
         t_dur+=total_duration(child)
     return t_dur
