@@ -62,7 +62,10 @@ def project_list(request):
         recs_list=Record.objects.filter(project=project['project'])
         for rec in recs_list:
             if rec.duration: 
-                duration=duration+rec.duration
+                duration+=rec.duration
+            else:
+                a=timezone.now()-rec.start_time
+                duration+=a.days*24*60*60+a.seconds
         duration=format_duration(duration)
         #Текущий символ обозначения иерархии
         hier='->'

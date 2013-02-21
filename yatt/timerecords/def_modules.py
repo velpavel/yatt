@@ -1,4 +1,5 @@
 ﻿from timerecords.models import Project, Record
+from django.utils import timezone
 
 
 #Процедура для преобразования длительности в секундах в строку
@@ -50,6 +51,9 @@ def total_duration(project):
     for rec in Record.objects.filter(project=project):
         if rec.duration: 
             t_dur+=rec.duration
+        else:
+            a=timezone.now()-rec.start_time
+            t_dur+=a.days*24*60*60+a.seconds
     for child in project.project_set.all():
         t_dur+=total_duration(child)
     return t_dur
