@@ -3,16 +3,29 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}main.css" />
     {% block style %}{% endblock %}
 </head>
 <body>
-    <h1><a href="/">Yatt site.</a></h1>
-    <br>
-    <p>#Будут и менюшки и остальное. Наверное в инклудах. Где-то на этой странице</p>
-    {% block content %}{% endblock %}
-    {% block footer %}
-    <hr>
-    <p>Thanks for visiting our site.</p>
-    {% endblock %}
+    <div id="head_block">
+        <div id="site_logo">
+            <h1><a href="/">Yatt site.</a></h1>
+        </div>
+        <div id="hi_block">
+            <p>Вы вошли как {{user}}</p>
+        </div>
+    </div>
+    <div id="menu_block">
+        {%include 'menu.html' %}
+    </div>
+    <div id="content_block">
+        {% block content %}<p>Тут должно что-то быть... Щёлкни в менюшку!</p>{% endblock %}
+    </div>
+    <div id="footer_block">
+        {% block footer %}
+            <hr>
+            <p>Thanks for visiting our site.</p>
+        {% endblock %}
+    </div>
 </body>
 </html>

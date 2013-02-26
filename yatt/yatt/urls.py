@@ -14,7 +14,7 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
     
-    #Главная - список ссылок Это временная мера
+    #Главная - просто заглушка. Это временная мера
     url(r'^$', 'yatt.views.home'),
     url(r'^accounts/login/$',login),
     url(r'^accounts/logout/$',logout),
