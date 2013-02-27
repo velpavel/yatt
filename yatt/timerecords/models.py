@@ -40,5 +40,5 @@ class Record(models.Model):
     duration = models.IntegerField()
     note = models.TextField(blank=True)
     
-    def __unicode__(self):
-        return '%s %s' %(self.project, self.start_time) 
+    def __unicode__ (self):
+        return '%s | %s' %(self.project.name, self.start_time) 
