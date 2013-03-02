@@ -68,8 +68,8 @@ def project_list(request):
                 duration+=a.days*24*60*60+a.seconds
         duration=format_duration(duration)
         #Текущий символ обозначения иерархии
-        hier='->'
-        projects_list.append({'project': project['project'], 'level': hier*project['level'], 'duration': duration, 'total_duration': format_duration(total_duration(project['project']))})
+        hier=' |'
+        projects_list.append({'project': project['project'], 'level': hier*(project['level']-1), 'duration': duration, 'total_duration': format_duration(total_duration(project['project']))})
     return render_to_response('timerecords/Projects_to_start.html', {'list': projects_list, 'now_going': null_rec_list}, 
                                 context_instance=RequestContext(request)) 
     

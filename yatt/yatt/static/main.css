@@ -4,11 +4,21 @@
     padding: 0;
     padding-top:0px;
     background:#f1f9f9;
+    font-family: "Calibri", "Arial", serif;
+    font-size: 12pt;
  }
  div{
     border-radius: 10px;}
 #head_block, #menu_block, #content_block, #footer_block{
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);}
+    #content_head, #menu_head{
+        position:relative;
+        border-radius: 10px 10px 0px 0px;
+        padding: 3px 1px;
+        text-align:center;
+        font-weight:bold;
+        font-size:130%;
+        margin-bottom: 0px;}
     
 #head_block{
     position:relative;
@@ -18,27 +28,37 @@
     font-size: 24px; /* Размер шрифта */
     font-weight: bold; /* Жирное начертание */
     color: black; /* Цвет символов */}
+    #hi_block{
+        position:absolute;
+        top: 0px;
+        right: 5px;}
     
-#head_block h1{
-        margin:1px;}
-#hi_block{
-    position:absolute;
-    top: 0px;
-    right: 5px;}
 #menu_block{
     width: 200px; /* Ширина меню */
     background:#D9EDF7;
     float: left;}
+    #menu_head{
+        background:#78b9de;}
+    #menu_block ul{
+        margin-top: 0px;}
+    #menu_block a{
+        text-decoration:none;} 
+        
 #content_block{
     background:#FCF8E3;
     margin-left: 215px;    /* Отступ слева */
-    padding: 2px 10px;}
+    padding: 0px 0px;}
+    #content_head{
+        background:#e4d689;}
+    #content_inner_block{
+        padding: 2px 10px;}
+        
 #footer_block{
     position: relative;
     clear: both;
     background:#D9EDF7;
-    padding: 15px 0 15px 10px; /* Поля вокруг текста */
+    padding: 5px 0 5px 10px; /* Поля вокруг текста */
     top: 15px;/* Расстояние между footer и колонками */
-    font-size: 24px; /* Размер шрифта */
+    font-size: 14px; /* Размер шрифта */
     font-weight: bold; /* Жирное начертание */
     color: black; /* Цвет символов */}

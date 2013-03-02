@@ -9,21 +9,28 @@
 <body>
     <div id="head_block">
         <div id="site_logo">
-            <h1><a href="/">Yatt site.</a></h1>
+            <a href="/"><img src="{{ STATIC_URL }}yatt_logo2.gif" /></a>
         </div>
         <div id="hi_block">
             <p>Вы вошли как {{user}}</p>
         </div>
     </div>
     <div id="menu_block">
+        <div id="menu_head">
+            Меню
+        </div>
         {%include 'menu.html' %}
     </div>
     <div id="content_block">
-        {% block content %}<p>Тут должно что-то быть... Щёлкни в менюшку!</p>{% endblock %}
+        <div id="content_head">
+            {% block title_content %}Теперь:{% endblock %}
+        </div>
+        <div id="content_inner_block">
+            {% block content %}<p>Тут должно что-то быть... Щёлкни в менюшку!</p>{% endblock %}
+        </div>
     </div>
     <div id="footer_block">
         {% block footer %}
-            <hr>
             <p>Thanks for visiting our site.</p>
         {% endblock %}
     </div>

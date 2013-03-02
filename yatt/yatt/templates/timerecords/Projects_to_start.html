@@ -3,14 +3,16 @@
 {% block style %}
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}pr_to_st.css" />
 {% endblock %}
+{% block title_content %}Текущие проекты{% endblock %}
 {% block content %}
     {% if now_going %}
-        <p>Сейчас запущены:</p>
+        <p><b>Сейчас запущен:</b></p>
         <ul>
         {% for record in now_going %}
         <li>{{record.project}} | {{record.start_time}}</li>
         {%endfor%}
         </ul>
+        <hr/>
     {% endif %}
 
     <form action="" method="post">
@@ -21,9 +23,11 @@
     {% endif %}
     <input type="radio" name="prjct" id="prjct-2" value="-2" />
     <label for="prjct-2">Новый проект:<input type="text" name="newprjct" size=90></label><br>
+    <hr/>
+    <p><b>Ваши проекты:</b></p>
     {% for project in list %}
         <input type="radio" name="prjct" id="prjct{{ forloop.counter }}" value="{{ project.project.id }}" />
-        <label for="prjct{{ forloop.counter }}">{{project.level}} {{ project.project.name }}  ({{project.duration}} | {{project.total_duration}})(<a href="/tracking/{{project.project.id}}/">О проекте</a>)</label><br>
+        <label for="prjct{{ forloop.counter }}">{{project.level}} <span class="project_name">{{ project.project.name }}</span>  ({{project.duration}} | {{project.total_duration}})(<a href="/tracking/{{project.project.id}}/">О проекте</a>)</label><br>
     {% endfor %}
     <input type="submit" value="Ок." />
     </form>
