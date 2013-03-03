@@ -12,11 +12,24 @@
             {% for rec in rec_list %}
                 <li>{{rec}}</li>
             {% endfor %}
-            </ul>
+            </ul>            
+        {% endif %}
+        {% if child_list %}
+            <p>Его потомки:</p>
+            <ul>
+            {% for child in child_list %}
+                <li>{{child.project}}</li>
+            {% endfor %}
+            </ul>            
         {% endif %}
         <form action="" method="post">
         {% csrf_token %}
-            <input type="hidden" name="i_sure" value="Yes">
+            {% if child_list %}
+                <input type="checkbox" name="del_child" id="del_child" value=1/>
+                <label for="del_child">Удалить и проекты потомки.</label>
+                <br/>
+            {% endif %}
+            <input type="hidden" name="i_sure" value="Yes"/>
             <input type="submit" value="Удалить" />
             <button formaction="/">Отмена</button>
         </form>

@@ -137,14 +137,20 @@ def del_project(request, prj_id=None):
     except Exception:
         raise Http404
     if request.method == 'POST':
-        rec_list=Record.objects.filter(project=project)
+        rec_list=[]
+        child_list=[]
         if 'i_sure' in request.POST:
-            rec_list.delete()
-            project.delete();
+            if not('del_child' in request.POST):
+                project.project_set.all().update(parent=None)
+            #все связанные записи и пректы удалятся автоматически
+            project.delete()
             return HttpResponseRedirect('/')
+        else:
+            rec_list=Record.objects.filter(project=project)
+            child_list=hier_childs([project,])[1:]
     else:
         raise Http404
-    return render_to_response('timerecords/del_rec.html', {'rec': project, 'rec_list': rec_list}, context_instance=RequestContext(request))
+    return render_to_response('timerecords/del_rec.html', {'rec': project, 'rec_list': rec_list, 'child_list':child_list}, context_instance=RequestContext(request))
     
 # просмотр проекта.
 @login_required
