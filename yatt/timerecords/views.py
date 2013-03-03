@@ -160,5 +160,9 @@ def show_project(request, prj_id=None):
     except Exception:
         project=None
     #сюда можно запихать проверку на нужного юзера для детей и родителей
-    
     return render_to_response('timerecords/show_project.html', {'rec': project, 'form': form,}, context_instance=RequestContext(request))
+
+@login_required
+def show_new_projects(request, prj_id=None):
+    projects_list=Project.objects.filter(user=request.user, new=True)
+    return render_to_response('timerecords/new_projects.html', {'projects_list': projects_list,}, context_instance=RequestContext(request))

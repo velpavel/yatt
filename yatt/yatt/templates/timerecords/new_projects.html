@@ -1,0 +1,19 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Новые проекты{% endblock %}
+{% block title_content %}Список "быстрых" проектов{% endblock %}
+
+{% block content %}
+    <p>Список проектов помеенных как "новые". Возможно вы хотите заполнить к ним описание или изменить их место в иерархи проектов.
+    Чтобы проект исчез из этого списка, при редактировании проекта снимите галочку "новый"</p>
+    {% if projects_list %}
+        <ul>
+        {% for project in projects_list %}
+            <li>{{ project.name }} (родитель: {{project.parent}}) <a href="/tracking/{{ project.id }}/">(Посмотреть описание)</a>
+            <a href="/tracking/project/{{ project.id }}/">(Редактировать)</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Нет новых проектов.</p>
+    {% endif %}
+{% endblock %}
