@@ -141,7 +141,7 @@ def del_project(request, prj_id=None):
         child_list=[]
         if 'i_sure' in request.POST:
             if not('del_child' in request.POST):
-                project.project_set.all().update(parent=None)
+                project.project_set.all().update(parent=project.parent)
             #все связанные записи и пректы удалятся автоматически
             project.delete()
             return HttpResponseRedirect('/')
