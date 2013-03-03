@@ -1,5 +1,5 @@
 ﻿from django.conf.urls import patterns, include, url
-from django.contrib.auth.views import login, logout
+from django.contrib.auth.views import login
 from timerecords.models import Project
 from django.views.generic import ListView, DetailView
 
@@ -17,7 +17,7 @@ urlpatterns = patterns('',
     #Главная - просто заглушка. Это временная мера
     url(r'^$', 'yatt.views.home'),
     url(r'^accounts/login/$',login),
-    url(r'^accounts/logout/$',logout),
+    url(r'^accounts/logout/$','yatt.views.logout'),
     #когда-нибудь тут будет другая ссыль
     url(r'^accounts/profile/$', 'yatt.views.home'),
     # Список проектов с возможностью посмотреть вложенные.
