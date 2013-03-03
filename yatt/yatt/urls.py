@@ -37,8 +37,12 @@ urlpatterns = patterns('',
     url(r'^tracking/(?P<prj_id>\d+)/new/$', 'timerecords.views.show_project'),
     # редактирование записей
     url(r'^tracking/record/(?P<rec_id>\d+)/$', 'timerecords.views.edit_record'),
+    # удаление записей
+    url(r'^tracking/record/(?P<rec_id>\d+)/del/$', 'timerecords.views.del_record'),
     # редактирование проектов
     url(r'^tracking/project/(?P<prj_id>\d+)/$', 'timerecords.views.edit_project'),
+    # удаление проектов
+    url(r'^tracking/project/(?P<prj_id>\d+)/del/$', 'timerecords.views.del_project'),
     
     # Начало записи в проекте. Потом объеденить с index?
     url(r'^tracking/$', 'timerecords.views.project_list'),

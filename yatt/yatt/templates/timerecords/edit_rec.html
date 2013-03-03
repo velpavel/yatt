@@ -15,7 +15,8 @@
         <form action="" method="post">
         {% csrf_token %}
             {{form.as_p}}
-            <input type="submit" value="Submit" />
+            <input type="submit" value="Применить" />
+            <button formaction="del/">Удалить</button>
         </form> 
     {% else %}
         <p>Нет такой записи для вас</p>

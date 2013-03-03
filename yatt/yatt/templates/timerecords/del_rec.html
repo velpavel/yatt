@@ -1,0 +1,26 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Редактирование{% endblock %}
+{% block title_content %}Точно удалить?{% endblock %}
+
+{% block content %}
+    {% if rec %}
+        <p>Удалить {{rec}}?</p>
+        {% if rec_list %}
+            <p>И его записи:</p>
+            <ul>
+            {% for rec in rec_list %}
+                <li>{{rec}}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        <form action="" method="post">
+        {% csrf_token %}
+            <input type="hidden" name="i_sure" value="Yes">
+            <input type="submit" value="Удалить" />
+            <button formaction="/">Отмена</button>
+        </form>
+    {% else %}
+        <p>Нет такой записи для вас</p>
+    {% endif %}
+{% endblock %}
