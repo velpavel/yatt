@@ -44,16 +44,22 @@ def hier_childs(head_projects, user=None):
                 return []
         temp[0:1]=child_list
     return hier_projects_list
-    
- # Расчёт длительности с учётом всех детей.
-def total_duration(project):
-    t_dur=0
+
+# Расчёт длительности проекта
+def prj_duration(project):
+    dur=0
     for rec in Record.objects.filter(project=project):
         if rec.duration: 
-            t_dur+=rec.duration
+            dur+=rec.duration
         else:
             a=timezone.now()-rec.start_time
-            t_dur+=a.days*24*60*60+a.seconds
+            dur+=a.days*24*60*60+a.seconds
+    return dur
+
+# Расчёт длительности с учётом всех детей.
+def total_duration(project):
+    t_dur=0
+    t_dur+=prj_duration(project)
     for child in project.project_set.all():
         t_dur+=total_duration(child)
     return t_dur

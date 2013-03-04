@@ -4,7 +4,7 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from timerecords.models import Project, Record
 from timerecords.forms import RecordForm, ProjectForm
-from timerecords.def_modules import format_duration, hier_childs, total_duration
+from timerecords.def_modules import format_duration, hier_childs, total_duration, prj_duration
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
@@ -55,15 +55,7 @@ def project_list(request):
    #Вычислим длительность для каждого проекта
     projects_list=[]
     for project in hier_projects_list:
-        duration=0
-        recs_list=Record.objects.filter(project=project['project'])
-        for rec in recs_list:
-            if rec.duration: 
-                duration+=rec.duration
-            else:
-                a=timezone.now()-rec.start_time
-                duration+=a.days*24*60*60+a.seconds
-        duration=format_duration(duration)
+        duration=format_duration(prj_duration(project['project']))
         #Текущий символ обозначения иерархии
         hier=' |'
         projects_list.append({'project': project['project'], 'level': hier*(project['level']-1), 'duration': duration, 'total_duration': format_duration(total_duration(project['project']))})
