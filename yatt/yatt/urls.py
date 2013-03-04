@@ -18,6 +18,7 @@ urlpatterns = patterns('',
     url(r'^$', 'yatt.views.home'),
     url(r'^accounts/login/$',login),
     url(r'^accounts/logout/$','yatt.views.logout'),
+    url(r'^accounts/registr/$','yatt.views.registr'),
     #когда-нибудь тут будет другая ссыль
     url(r'^accounts/profile/$', 'yatt.views.home'),
     # Список проектов с возможностью посмотреть вложенные.

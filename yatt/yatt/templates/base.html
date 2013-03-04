@@ -12,7 +12,17 @@
             <a href="/"><img src="{{ STATIC_URL }}yatt_logo2.gif" /></a>
         </div>
         <div id="hi_block">
-            <p>Вы вошли как {{user}}</p>
+            {% if user.is_authenticated %}
+                {% if user.is_staff%}
+                    <p><a href="/admin/">Вы вошли как</a> {{user}}.<br/>
+                {% else %}
+                    <p>Вы вошли как {{user}}.<br/>
+                {% endif %}
+                <a href="/accounts/logout/">Выйти</a></p>
+            {% else %}
+                <p>Добро пожаловать, гость.<br/>
+                <a href="/accounts/registr/">Зарегестрироваться</a> <a href="/accounts/login/">Войти</a></p>
+            {% endif%}
         </div>
     </div>
     <div id="menu_block">

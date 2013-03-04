@@ -39,7 +39,12 @@ a{
         position:absolute;
         top: 0px;
         right: 5px;
+        text-align:right;
     }
+        #hi_block a{
+            font-weight: normal;
+            font-size: 90%;
+        }
     
 #menu_block{
     width: 200px; /* Ширина меню */
