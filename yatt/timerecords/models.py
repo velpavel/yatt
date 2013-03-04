@@ -37,7 +37,7 @@ class Record(models.Model):
     project = models.ForeignKey(Project)
     start_time = models.DateTimeField('start Time')
     #Now we save seconds it this field
-    duration = models.IntegerField()
+    duration = models.IntegerField(null=True)
     note = models.TextField(blank=True)
     
     def __unicode__ (self):
