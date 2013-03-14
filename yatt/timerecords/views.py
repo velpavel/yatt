@@ -39,18 +39,18 @@ def project_list(request):
         null_rec_list=Record.objects.filter(user=request.user, duration=None)
     
     #Добыча списка корневых проектов. 
-    #Если нет чётких корневых, будем использовать просто список проектов.
-    projects=Project.objects.filter(user=request.user, parent=None)
+    #Если установлена фокусировка на проекте, то он выступает корневым.
+    #зацикленных проектов быть не может
+    has_filters=0
+    if 'focus_project' in request.session:
+        try:
+            projects=Project.objects.filter(user=request.user, pk=request.session['focus_project'])
+            has_filters=1
+        except Exception:
+            del request.session["focus_project"]
+    if not has_filters:
+        projects=Project.objects.filter(user=request.user, parent=None)
     hier_projects_list=hier_childs(head_projects=projects, user=request.user)
-    #Здесь начнём обработку проетов без корневого
-    projects=Project.objects.filter(user=request.user)
-    now_we_have_projects=[]
-    for project in hier_projects_list:
-        now_we_have_projects.append(project['project'])
-    #добавим уровень иерархии 0
-    for project in projects:
-        if project not in now_we_have_projects:
-            hier_projects_list.append({'project': project, 'level': 0})   
    
    #Вычислим длительность для каждого проекта
     projects_list=[]
@@ -59,7 +59,7 @@ def project_list(request):
         #Текущий символ обозначения иерархии
         hier=' |'
         projects_list.append({'project': project['project'], 'level': hier*(project['level']-1), 'duration': duration, 'total_duration': format_duration(total_duration(project['project']))})
-    return render_to_response('timerecords/Projects_to_start.html', {'list': projects_list, 'now_going': null_rec_list}, 
+    return render_to_response('timerecords/Projects_to_start.html', {'list': projects_list, 'now_going': null_rec_list, 'filters': has_filters}, 
                                 context_instance=RequestContext(request)) 
     
 @login_required

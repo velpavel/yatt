@@ -5,6 +5,9 @@
 {% endblock %}
 {% block title_content %}Текущие проекты{% endblock %}
 {% block content %}
+    {% if filters %}
+        <p><a href='/tracking/unfocus/'>Снять фильтры</a></p>
+    {% endif %}
     {% if now_going %}
         <p><b>Сейчас запущен:</b></p>
         <ul>
@@ -28,7 +31,8 @@
     {% for project in list %}
         <input type="radio" name="prjct" id="prjct{{ forloop.counter }}" value="{{ project.project.id }}" {%if not project.project.can_has_records %} disabled {% endif %} />
         <label for="prjct{{ forloop.counter }}">{{project.level}} <span class="project_name">{{ project.project.name }}</span>  ({{project.duration}} | {{project.total_duration}}) 
-        (<a href="/tracking/{{project.project.id}}/">О проекте</a>) (<a href="/tracking/project/{{project.project.id}}/">Редактировать</a>)</li></label><br>
+        (<a href="/tracking/{{project.project.id}}/">О проекте</a>) (<a href="/tracking/project/{{project.project.id}}/">Редактировать</a>)
+        (<a href="/tracking/project/{{project.project.id}}/focus/">Фокус</a>)</li></label><br>
     {% endfor %}
     <input type="submit" value="Ок." />
     </form>

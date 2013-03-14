@@ -6,22 +6,28 @@
 {% block content %}
     Вы в смотрите инфу о проекте "{{project.name}}"<br>
     <a href="/tracking/project/{{project.id}}">Отредактировать проект</a> <br>
-    Его родитель:
-    {% if project.parent %}
-        <p> <a href='/tracking/{{project.parent.id}}'>{{project.parent}}</a></p>
-    {% else%}
-        <p>Сирота...</p>
+    <p>Его описание: <br/>
+    {% if project.description %}
+        {{project.description}}</p>
+    {% else %}
+        Описание не заполнено.</p>
     {% endif %}
-    Его дети:
+    <p> Его родитель: <br/>
+    {% if project.parent %}
+        <a href='/tracking/{{project.parent.id}}'>{{project.parent}}</a></p>
+    {% else %}
+        Сирота...</p>
+    {% endif %}
+    <p>Его дети:</p>
     {% for child in project.project_set.all %}
-        <p> <a href='/tracking/{{child.id}}'>{{child}}</a></p>
-    {% empty%}
+        <p><a href='/tracking/{{child.id}}'>{{child}}</a></p>
+    {% empty %}
         <p>Нет деток...</p>
     {% endfor %}
-    Его записи:
+    <p>Его записи:</p>
     {% for record in project.record_set.all %}
         <p><a href="/tracking/record/{{record.id}}">{{record.project}} | {{record.start_time}} | {{record.duration}}</a></p>
-    {% empty%}
+    {% empty %}
         <p>Нет записей...</p>
     {% endfor %}
 {% endblock %}

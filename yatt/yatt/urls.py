@@ -50,4 +50,10 @@ urlpatterns = patterns('',
     # Начало записи в проекте. Потом объеденить с index?
     url(r'^tracking/$', 'timerecords.views.project_list'),
     
+    #js url - потом будут засунуты в js и удалены.
+    # фокус на проектк
+    url(r'^tracking/project/(?P<prj_id>\d+)/focus/$', 'timerecords.def_js_views.focus'),
+    # снять фокус
+    url(r'^tracking/unfocus/$', 'timerecords.def_js_views.unfocus'),
+    
 )
